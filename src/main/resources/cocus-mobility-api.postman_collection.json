@@ -1,0 +1,175 @@
+{
+	"info": {
+		"_postman_id": "c25b57f6-9b2e-4f55-9a55-8c0b15091f69",
+		"name": "cocus-mobility-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "getRepositories_ValidUsername_ReturnsOk",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", () => pm.response.to.have.status(\"OK\"))\r",
+							"\r",
+							"const jsonSchema = JSON.parse(pm.collectionVariables.get(\"jsonSchema\"))\r",
+							"\r",
+							"// saving the API Response as a variable\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Response has valid schema\", () => { pm.response.to.have.jsonSchema(jsonSchema) });\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/user/{{username}}/repository",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{username}}",
+						"repository"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRepositories_InvalidAcceptHeader_Returns406",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 406 Not Acceptable\", () => pm.expect(pm.response.status).to.equal(\"Not Acceptable\"))\r",
+							"\r",
+							"// saving the API Response as a variable\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"statusCode matches\", () => pm.expect(response.statusCode).to.equal(\"NOT_ACCEPTABLE\"))\r",
+							"pm.test(\"message matches\",\r",
+							"    () => pm.expect(response.message).to.equal(\"Could not find acceptable representation\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/user/{{$guid}}/repository",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$guid}}",
+						"repository"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRepositories_InvalidUsername_Returns404",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404 Not Found\", () => pm.response.to.be.notFound);\r",
+							"\r",
+							"// saving the API Response as a variable\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test(\"statusCode matches\", () => pm.expect(response.statusCode).to.equal(\"NOT_FOUND\"))\r",
+							"pm.test(\"message matches\", () => pm.expect(response.message).to.equal(\"Not Found\"))"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/user/{{$guid}}/repository",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"{{$guid}}",
+						"repository"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "default"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "jsonSchema",
+			"value": "{\"type\":\"array\",\"items\":[{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"branchList\":{\"type\":\"array\",\"items\":[{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"commitHash\":{\"type\":\"string\"}},\"required\":[\"name\",\"commitHash\"]}]}},\"required\":[\"name\",\"owner\",\"branchList\"]},{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"branchList\":{\"type\":\"array\",\"items\":[{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"commitHash\":{\"type\":\"string\"}},\"required\":[\"name\",\"commitHash\"]}]}},\"required\":[\"name\",\"owner\",\"branchList\"]},{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"owner\":{\"type\":\"string\"},\"branchList\":{\"type\":\"array\",\"items\":[{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"commitHash\":{\"type\":\"string\"}},\"required\":[\"name\",\"commitHash\"]}]}},\"required\":[\"name\",\"owner\",\"branchList\"]}]}",
+			"type": "default"
+		}
+	]
+}

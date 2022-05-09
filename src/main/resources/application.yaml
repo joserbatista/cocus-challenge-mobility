@@ -1,0 +1,12 @@
+
+spring:
+  codec:
+    log-request-details: true
+client:
+  github:
+    url: https://api.github.com
+    username: ${GITHUB_USERNAME:}
+    token: ${GITHUB_TOKEN:}
+springdoc:
+  swagger-ui:
+    path: /

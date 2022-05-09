@@ -1,0 +1,67 @@
+openapi: 3.0.1
+info:
+  title: GitHub API
+  version: '1.0'
+tags:
+  - name: repository-query
+paths:
+  /user/{username}/repository:
+    get:
+      tags:
+        - repository-query
+      description: List all non-fork GitHub repositories for a user, with branches
+      operationId: getRepositoriesByUsername
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repository'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          example: BAD_REQUEST
+        message:
+          type: string
+          example: API rate limit exceeded
+    Branch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: main
+        commitHash:
+          type: string
+          example: 39e2c2a8b61be79544905727c4c3d0e440412cd8
+    Repository:
+      type: object
+      properties:
+        name:
+          type: string
+          example: sample-repo
+        owner:
+          type: string
+          example: joserbatista
+        branchList:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'

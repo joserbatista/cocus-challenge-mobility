@@ -1,0 +1,52 @@
+Resources:
+  GitHubAppSG:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: For ssh on port 22 access and 8080 port access for GitHub App
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: 0.0.0.0/0
+  GitHubApp:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: t2.micro
+      Tags:
+        - Key: Name
+          Value: GitHub-App
+      ImageId: ami-09439f09c55136ecf
+      KeyName: ec2-key
+      SecurityGroups:
+        - !Ref GitHubAppSG
+      UserData: !Base64 |
+        #!/bin/bash
+        # Install Docker
+        sudo yum update -y
+        sudo yum install docker -y
+        sudo service docker start
+        sudo usermod -a -G docker ec2-user
+        # Install docker-compose
+        sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        # Create docker-compose file
+        echo "
+        version: '3.8'
+        services:
+          github-app:
+            container_name: github_app
+            image: public.ecr.aws/m4b1s3o6/jb-ecr:mobility-challenge-0.0.1
+            restart: on-failure
+            ports:
+              - "8080:8080"
+            networks:
+              - github-ec2-network
+        networks:
+          github-ec2-network:
+        " > docker-compose.yaml 
+        # Run docker-compose sudo
+        /usr/local/bin/docker-compose up -d

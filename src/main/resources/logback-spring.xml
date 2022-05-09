@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%highlight(%d{ISO8601} %-5level) %yellow(%-40.40logger{39}) %highlight(->) %msg [%cyan(%M)]%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- ROOT LOGGERS -->
+    <!-- LOG everything at INFO level -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- CUSTOM LOGGERS -->
+    <logger name="com.cocus" level="TRACE"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+
+</configuration>
